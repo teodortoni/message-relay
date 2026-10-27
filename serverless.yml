@@ -1,0 +1,159 @@
+service: ${env:SERVICE}
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ${env:AWS_SQS_REGION, us-east-1}
+  stage: ${env:AWS_SQS_STAGE, dev}
+  memorySize: 128
+  iamRoleStatements:
+    # This part gives access to lambda functions to send messages to SQS queues
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+      Resource:
+        - Fn::GetAtt: [MessageRelay, Arn]
+        - Fn::GetAtt: [MessageRelayFailures, Arn]
+    - Effect: Allow
+      Action:
+        - "secretsmanager:*"
+      Resource: "*"
+
+  # This part creates a resource policy for the entry point Api Gateway Endpoint
+  # Whitelists only the allowed partner IPs to access it
+  resourcePolicy:
+    - Effect: Allow
+      Principal: "*"
+      Action: execute-api:Invoke
+      Resource:
+        - execute-api:/*/*/*
+    - Effect: Deny
+      Principal: "*"
+      Action:
+        - execute-api:Invoke
+      Resource:
+        - execute-api:/*/*/*
+      Condition:
+        NotIpAddress:
+          aws:SourceIp:
+            - "203.0.113.10"
+            - "203.0.113.11"
+            - "203.0.113.12"
+            - "203.0.113.13"
+            - "203.0.113.14"
+            - "203.0.113.15"
+            - "203.0.113.16"
+            - "203.0.113.17"
+            - "203.0.113.18"
+            - "203.0.113.19"
+            - "203.0.113.20"
+            - "203.0.113.21"
+            - "203.0.113.22"
+            - "203.0.113.23"
+            - "203.0.113.24"
+            - "203.0.113.25"
+            - "203.0.113.26"
+            - "203.0.113.27"
+            - "203.0.113.28"
+            - "203.0.113.29"
+            - "203.0.113.30"
+            - "203.0.113.31"
+            - "203.0.113.32"
+            - "203.0.113.33"
+            - "203.0.113.34"
+            - "203.0.113.35"
+            - "203.0.113.36"
+            - "203.0.113.37"
+            - "203.0.113.38"
+            - "203.0.113.39" # my IP for testing purposes
+            - "203.0.113.40" # my IP for testing purposes
+            - "203.0.113.41" # Freighter production IP
+            - "203.0.113.42" # VPN 1 IP
+
+  # This part sets environment variables that can be used by the script
+  environment:
+    QUEUE_URL:
+      Ref: MessageRelay
+    QUEUE_FAILURES_URL:
+      Ref: MessageRelayFailures
+
+# This part specifies the plugins used to help with deployment
+plugins:
+  - serverless-webpack
+  - serverless-dotenv-plugin
+
+# This part creates the resources needed to be used by the script
+# In our case the message-relay-messages & message-relay-messages-failures queues
+resources:
+  Resources:
+    MessageRelay:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.stage}-message-relay-messages
+    MessageRelayFailures:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.stage}-message-relay-messages-failures
+
+# This part specifies the lambda functions necessary for this node module
+functions:
+  receiver:
+    handler: ./handler.receiver
+    timeout: 12
+    events:
+      - http:
+          path: /v1
+          method: post
+          cors: true
+  processor:
+    handler: ./handler.processor
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - MessageRelay
+              - Arn
+    # This part gives lambda access to the RDS instance and the database
+    vpc:
+      securityGroupIds:
+        - ${env:AWS_VPC_SECURITY_GROUP}
+      subnetIds:
+        - ${env:AWS_VPC_SUBNET_1}
+        - ${env:AWS_VPC_SUBNET_2}
+
+  # This lambda function handles the Partners CRUD
+  partners:
+    handler: ./handler.partners
+    timeout: 12
+    events:
+      - http:
+          path: /partners
+          method: any
+          cors: true
+      - http:
+          path: "/partners/{proxy+}"
+          method: any
+          cors: true
+    # This part gives lambda access to the RDS instance and the database
+    vpc:
+      securityGroupIds:
+        - ${env:AWS_VPC_SECURITY_GROUP}
+      subnetIds:
+        - ${env:AWS_VPC_SUBNET_1}
+        - ${env:AWS_VPC_SUBNET_2}
+
+  # This last section creates two test lambda functions
+  # These functions are mapped with the demo-message-relaynode-destination Api Gateway
+  testdestination:
+    handler: ./handler.destination
+    # events:
+    #   - http:
+    #       path: /destination
+    #       method: post
+    #       cors: true
+  testdestination2:
+    handler: ./handler.destination
+    # events:
+    #   - http:
+    #       path: /destination2
+    #       method: post
+    #       cors: true

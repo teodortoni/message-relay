@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+      "receiptHandle": "MessageReceiptHandle",
+      "body": "{\"type\":\"masserr\",\"version\":\"v1\",\"msgid\":\"Example365Ricoch_Ntwk\",\"data\":{\"vmsId\":null,\"axisId\":0,\"diceId\":null,\"status\":\"PUBLISHING_ERROR\",\"timestamp\":1593913276,\"bucketKey\":null,\"message\":\"BucketKey: vod/new/Example365Ricoch_Ntwk PathToWweItem:s3://example-bucket/series/W/Example-365_321/Example-365-2020_2377/Example365Ricoch_Ntwk/FAILED. Incoming content item error:ExceptionMessage: The request channel timed out while waiting for a reply after 00:01:00. Increase the timeout value passed to the call to Request or increase the SendTimeout value on the Binding. The time allotted to this operation may have been a portion of a longer timeout. FeedEntityBucketKey: \",\"revision\":{\"Massive\":1,\"Dice\":1,\"Editorial\":1},\"releaseDate\":null,\"assetIdSource\":null,\"contentWweid\":null,\"contentVersionWweid\":null},\"sourceIp\": \"127.0.0.1\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1523232000000",
+        "SenderId": "123456789012",
+        "ApproximateFirstReceiveTimestamp": "1523232000001"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "7b270e59b47ff90a553787216d55d91d",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+      "receiptHandle": "MessageReceiptHandle",
+      "body": "{\"type\":\"massmsg\",\"version\":\"v1\",\"msgid\":\"NXT570_Ntwk\",\"data\":{\"vmsId\":\"189847\",\"axisId\":145195,\"diceId\":\"155090\",\"status\":\"PACKAGE_PUBLISHED\",\"timestamp\":1594118486,\"bucketKey\":\"series/N/NXT_31/NXT-2020_2287/NXT570_Ntwk/NXT570_Ntwk.json\",\"message\":null,\"revision\":{\"Massive\":1,\"Dice\":1,\"Editorial\":1},\"releaseDate\":\"2020-07-03 02:00:00\",\"assetIdSource\":null,\"contentWweid\":null,\"contentVersionWweid\":null},\"sourceIp\": \"127.0.0.1\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1523232000000",
+        "SenderId": "123456789012",
+        "ApproximateFirstReceiveTimestamp": "1523232000001"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "7b270e59b47ff90a553787216d55d91d",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

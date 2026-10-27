@@ -1,0 +1,2 @@
+const createPartnersTableQuery =
+  "CREATE TABLE partners (`id` VARCHAR(36) NOT NULL, `type` VARCHAR(20) NOT NULL UNIQUE, `version` VARCHAR(10) NOT NULL, `destination` JSON NOT NULL CHECK(JSON_VALID(`destination`)), `sync` VARCHAR(10) NULL, `syncdel` VARCHAR(10) NULL, `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updated_at` DATETIME(6) NULL ON UPDATE CURRENT_TIMESTAMP(6), PRIMARY KEY(`id`)) ENGINE=InnoDB"
